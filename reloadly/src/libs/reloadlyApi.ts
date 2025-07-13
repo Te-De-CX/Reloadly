@@ -1,7 +1,8 @@
 import axios, { AxiosError } from 'axios';
 
 // Configuration
-const BASE_URL = process.env.RELOADLY_API_URL || (process.env.NODE_ENV === 'production' ? 'https://topups.reloadly.com' : 'https://topups-sandbox.reloadly.com');
+const BASE_URL = process.env.RELOADLY_API_URL ;
+// || (process.env.NODE_ENV === 'production' ? 'https://topups.reloadly.com' : 'https://topups-sandbox.reloadly.com');
 
 let accessToken: string | null = null;
 let tokenExpiry: number | null = null;

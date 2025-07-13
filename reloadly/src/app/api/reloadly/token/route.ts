@@ -6,7 +6,8 @@ export async function POST() {
   const RELOADLY_CLIENT_ID = process.env.RELOADLY_CLIENT_ID;
   const RELOADLY_CLIENT_SECRET = process.env.RELOADLY_CLIENT_SECRET;
   const TOKEN_URL = 'https://auth.reloadly.com/oauth/token';
-  const AUDIENCE = process.env.RELOADLY_API_URL || (process.env.NODE_ENV === 'production' ? 'https://topups.reloadly.com' : 'https://topups-sandbox.reloadly.com');
+  const AUDIENCE = process.env.RELOADLY_API_URL ;
+  // || (process.env.NODE_ENV === 'production' ? 'https://topups.reloadly.com' : 'https://topups-sandbox.reloadly.com');
 
   // Log environment variables for debugging (remove in production)
   console.log('Environment variables:', {
