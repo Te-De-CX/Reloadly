@@ -1,13 +1,11 @@
 import axios, { AxiosError } from 'axios';
 
 // Configuration
-const BASE_URL = process.env.RELOADLY_API_URL ;
-// || (process.env.NODE_ENV === 'production' ? 'https://topups.reloadly.com' : 'https://topups-sandbox.reloadly.com');
+const BASE_URL = 'https://topups-sandbox.reloadly.com'
 
 let accessToken: string | null = null;
 let tokenExpiry: number | null = null;
 let isFetchingToken = false;
-
 
 // Type Definitions
 interface TokenResponse {
@@ -61,6 +59,7 @@ interface ApiError {
   timeStamp?: string;
   details?: unknown;
 }
+
 export interface DataPlan {
   operatorId: number;
   operatorName: string;
@@ -71,14 +70,6 @@ export interface DataPlan {
   dataAmount: string;
   validity: string;
 }
-
-
-// Removed redundant CountryInfo interface
-// NetworkOperator interface removed as it was equivalent to OperatorResponse
-
-export type CountryInfo = CountryResponse;
-export type NetworkOperator = OperatorResponse;
-
 
 export interface DataPlanResponse {
   operatorId: number;
@@ -91,6 +82,9 @@ export interface DataPlanResponse {
   dataAmount?: string;
   validity?: string;
 }
+
+export type CountryInfo = CountryResponse;
+export type NetworkOperator = OperatorResponse;
 
 // Helper Functions
 const getAccessToken = async (retries = 3, delayMs = 1000): Promise<string> => {
@@ -114,7 +108,7 @@ const getAccessToken = async (retries = 3, delayMs = 1000): Promise<string> => {
     const response = await axios.post<TokenResponse>(
       '/api/reloadly/token',
       {},
-      { headers: { 'Content-Type': 'application/json' }, timeout: 10000 }
+      { headers: { 'Content-Type': 'application/json' }, timeout: 15000 } // Increased timeout
     );
 
     accessToken = response.data.access_token;
@@ -157,7 +151,7 @@ const makeRequest = async <T, D = unknown>(method: 'get' | 'post', endpoint: str
         Accept: 'application/com.reloadly.topups-v1+json',
       },
       data,
-      timeout: 10000,
+      timeout: 15000, // Increased timeout
     });
 
     console.log('API response:', { endpoint, status: response.status, data: response.data });
