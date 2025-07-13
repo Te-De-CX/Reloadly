@@ -1,8 +1,8 @@
 // app/api/reloadly/token/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import axios from 'axios';
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   const RELOADLY_CLIENT_ID = process.env.RELOADLY_CLIENT_ID;
   const RELOADLY_CLIENT_SECRET = process.env.RELOADLY_CLIENT_SECRET;
   const TOKEN_URL = 'https://auth.reloadly.com/oauth/token';

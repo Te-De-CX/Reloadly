@@ -64,11 +64,15 @@ interface ApiError {
   path?: string;
   statusCode?: number;
   timeStamp?: string;
-  details?: any;
+  details?: unknown;
 }
 
-export interface CountryInfo extends CountryResponse {}
-export interface NetworkOperator extends OperatorResponse {}
+// Removed redundant CountryInfo interface
+// NetworkOperator interface removed as it was equivalent to OperatorResponse
+
+export type CountryInfo = CountryResponse;
+export type NetworkOperator = OperatorResponse;
+
 
 export interface DataPlan {
   operatorId: number;
@@ -133,7 +137,7 @@ const getAccessToken = async (retries = 3, delayMs = 1000): Promise<string> => {
   }
 };
 
-const makeRequest = async <T>(method: 'get' | 'post', endpoint: string, data?: any): Promise<T> => {
+const makeRequest = async <T, D = unknown>(method: 'get' | 'post', endpoint: string, data?: D): Promise<T> => {
   try {
     const token = await getAccessToken();
     console.log('Making API request:', { method, endpoint, token: '[REDACTED]' });
@@ -168,17 +172,17 @@ const makeRequest = async <T>(method: 'get' | 'post', endpoint: string, data?: a
 };
 
 // API Methods
-export const getCountries = async (): Promise<CountryInfo[]> => {
+export const getCountries = async (): Promise<ApiListResponse<CountryResponse>> => {
   const response = await makeRequest<ApiListResponse<CountryResponse>>('get', '/countries');
   console.log('getCountries response:', response);
   const countries = response.data || response.content || [];
   if (!Array.isArray(countries)) {
     throw new Error('Invalid countries response format');
   }
-  return response;
+  return response; // ✅ Now matches return type
 };
 
-export const getOperators = async (countryCode: string): Promise<NetworkOperator[]> => {
+export const getOperators = async (countryCode: string): Promise<ApiListResponse<OperatorResponse>> => {
   const response = await makeRequest<ApiListResponse<OperatorResponse>>(
     'get',
     `/operators/countries/${countryCode}`
