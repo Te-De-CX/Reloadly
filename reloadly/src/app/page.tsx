@@ -28,7 +28,6 @@ import {
   purchaseData,
   checkBalance,
   CountryInfo,
-  OperatorResponse,
   DataPlan,
 } from '../libs/reloadlyApi';
 
@@ -383,12 +382,11 @@ const DataPurchaseForm = () => {
         <Typography
           variant="h3"
           sx={{
-            color: '#F3D514',
+            color: '#fff',
             fontWeight: 'bold',
             mb: 4,
             textAlign: 'center',
             fontFamily: 'Arial, sans-serif',
-            textShadow: '0 0 8px rgba(243, 213, 20, 0.5)',
           }}
         >
           Welcome to disudata.com
