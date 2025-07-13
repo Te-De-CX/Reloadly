@@ -7,6 +7,7 @@ let accessToken: string | null = null;
 let tokenExpiry: number | null = null;
 let isFetchingToken = false;
 
+
 // Type Definitions
 interface TokenResponse {
   access_token: string;
@@ -26,18 +27,11 @@ interface OperatorResponse {
   operatorId: number;
   name: string;
   countryCode: string;
-}
-
-interface DataPlanResponse {
-  id: number;
-  operatorId: number;
-  operatorName: string;
-  name: string;
-  suggestedAmounts?: number[];
-  fixedPrice?: number;
-  currencyCode: string;
-  dataAmount?: string;
-  validity?: string;
+  data: boolean;
+  bundle: boolean;
+  fixedAmounts?: number[];
+  fixedAmountsDescriptions?: Record<string, string>;
+  destinationCurrencyCode?: string;
 }
 
 interface BalanceResponse {
@@ -66,6 +60,17 @@ interface ApiError {
   timeStamp?: string;
   details?: unknown;
 }
+export interface DataPlan {
+  operatorId: number;
+  operatorName: string;
+  planId: string;
+  planName: string;
+  amount: number;
+  currency: string;
+  dataAmount: string;
+  validity: string;
+}
+
 
 // Removed redundant CountryInfo interface
 // NetworkOperator interface removed as it was equivalent to OperatorResponse
@@ -74,15 +79,16 @@ export type CountryInfo = CountryResponse;
 export type NetworkOperator = OperatorResponse;
 
 
-export interface DataPlan {
+export interface DataPlanResponse {
   operatorId: number;
   operatorName: string;
-  planId: number;
-  planName: string;
-  amount: number;
-  currency: string;
-  dataAmount: string;
-  validity: string;
+  id: string;
+  name: string;
+  suggestedAmounts?: number[];
+  fixedPrice?: number;
+  currencyCode: string;
+  dataAmount?: string;
+  validity?: string;
 }
 
 // Helper Functions
