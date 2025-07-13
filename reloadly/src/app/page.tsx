@@ -213,17 +213,20 @@ const DataPurchaseForm = () => {
     setLoadingStates(prev => ({ ...prev, countries: true, balance: true }));
     setApiError(null);
     try {
-      const [countriesData, balanceData] = await Promise.all([
+      const [countriesResponse, balanceData] = await Promise.all([
         getCountries(),
         checkBalance(),
       ]);
 
+      // Extract array from response
+      const countriesData = Array.isArray(countriesResponse) ? countriesResponse : countriesResponse.data;
+
       console.log('Setting countries:', countriesData);
-      setCountries(countriesData);
+      setCountries(countriesData ?? []);
       setBalance(balanceData);
 
-      if (countriesData.length > 0) {
-        const nigeria = countriesData.find(c => c.isoName === 'NG');
+      if ((countriesData ?? []).length > 0) {
+        const nigeria = (countriesData ?? []).find(c => c.isoName === 'NG');
         if (nigeria) {
           setValue('country', 'NG');
         }
@@ -260,8 +263,9 @@ const DataPurchaseForm = () => {
       setLoadingStates(prev => ({ ...prev, operators: true }));
       setApiError(null);
       try {
-        const data = await getOperators(countryCode);
-        const validOperators = data.filter(
+        const response = await getOperators(countryCode);
+        const operatorsArray = Array.isArray(response) ? response : response.data;
+        const validOperators = (operatorsArray ?? []).filter(
           op => op.data && (op.fixedAmounts?.length > 0 || (op.fixedAmountsDescriptions && Object.keys(op.fixedAmountsDescriptions).length > 0))
         );
         console.log('fetchOperators: Valid operators:', validOperators);
@@ -303,14 +307,15 @@ const DataPurchaseForm = () => {
         }
 
         const plans: DataPlan[] = operator.fixedAmounts.map(amount => {
-          const description = operator.fixedAmountsDescriptions[amount.toFixed(2)] || `${amount} Plan`;
+          const description =
+            operator.fixedAmountsDescriptions?.[amount.toFixed(2)] || `${amount} Plan`;
           const match = description.match(/(\d+\.?\d*?\s*(?:GB|MB))[\s\w]*?(?:\((.*?)\)|(\d+\s*(?:day|month)s?))/i);
           const dataAmount = match ? match[1] : 'Unknown';
           const validity = match ? (match[2] || match[3] || 'Unknown') : 'Unknown';
           return {
             operatorId: operator.operatorId,
             operatorName: operator.name,
-            planId: amount.toString(), // Use string to match schema
+            planId: amount.toString(),
             planName: description,
             amount,
             currency: operator.destinationCurrencyCode || 'NGN',
